@@ -2,7 +2,7 @@ package com.practice.demo.controllers;
 
 import com.practice.demo.dto.entity_dto.OperationDto;
 import com.practice.demo.dto.entity_dto.OperationListDto;
-import com.practice.demo.dto.paging_and_sotring_dto.models.OperationPagingAndSortingDto;
+import com.practice.demo.dto.paging_and_sotring_dto.models.OperationAbstractPagingAndSortingDto;
 import com.practice.demo.dto.specification_dto.models.OperationSpecificationDto;
 import com.practice.demo.models.entities.Operation;
 import com.practice.demo.models.db_views.OperationView;
@@ -24,7 +24,7 @@ public class OperationController {
     @GetMapping("/clients/{client_id}/account-{account_id}")
     public String accountById(@PathVariable(value = "client_id") Long clientId,
                               @PathVariable(value = "account_id") Long accountId,
-                              @ModelAttribute OperationPagingAndSortingDto pagingAndSortingDto,
+                              @ModelAttribute OperationAbstractPagingAndSortingDto pagingAndSortingDto,
                               @ModelAttribute OperationSpecificationDto operationSpecificationDto,
                               Model model, HttpServletRequest httpServletRequest) {
 
@@ -49,9 +49,9 @@ public class OperationController {
     }
 
     @GetMapping("/clients/{client_id}/account-{account_id}/operation-{operation_id}")
-    public String operationById(@PathVariable(value="client_id") Long clientId,
-                                @PathVariable(value="account_id") Long accountId,
-                                @PathVariable(value="operation_id") Long operationId, Model model) {
+    public String operationById(@PathVariable(value = "client_id") Long clientId,
+                                @PathVariable(value = "account_id") Long accountId,
+                                @PathVariable(value = "operation_id") Long operationId, Model model) {
 
         OperationView operation = operationService.findViewById(operationId);
 

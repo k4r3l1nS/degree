@@ -1,7 +1,7 @@
 package com.practice.demo.controllers;
 
 import com.practice.demo.dto.entity_dto.ClientDto;
-import com.practice.demo.dto.paging_and_sotring_dto.models.ClientPagingAndSortingDto;
+import com.practice.demo.dto.paging_and_sotring_dto.models.ClientAbstractPagingAndSortingDto;
 import com.practice.demo.dto.specification_dto.models.ClientSpecificationDto;
 import com.practice.demo.models.db_views.ClientView;
 import com.practice.demo.service.ClientService;
@@ -20,7 +20,7 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping("/clients")
-    public String clients(@ModelAttribute ClientPagingAndSortingDto clientPagingAndSortingDto,
+    public String clients(@ModelAttribute ClientAbstractPagingAndSortingDto clientPagingAndSortingDto,
                           @ModelAttribute ClientSpecificationDto clientSpecificationDto,
                           Model model, HttpServletRequest httpServletRequest) {
 

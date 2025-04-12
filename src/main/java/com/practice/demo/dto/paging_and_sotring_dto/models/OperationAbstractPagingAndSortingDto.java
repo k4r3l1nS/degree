@@ -1,6 +1,6 @@
 package com.practice.demo.dto.paging_and_sotring_dto.models;
 
-import com.practice.demo.dto.paging_and_sotring_dto.PagingAndSortingDto;
+import com.practice.demo.dto.paging_and_sotring_dto.AbstractPagingAndSortingDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class OperationPagingAndSortingDto extends PagingAndSortingDto {
+public class OperationAbstractPagingAndSortingDto extends AbstractPagingAndSortingDto {
 
     @Override
     public void initializeDefaultValues() {

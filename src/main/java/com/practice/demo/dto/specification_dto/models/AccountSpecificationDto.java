@@ -18,12 +18,12 @@ import java.util.List;
 @Builder
 public class AccountSpecificationDto implements SpecificationDto {
 
-    public final static String DEFAULT_ACCOUNT_NAME_OPERATION_TYPE = "begins with";
-    public final static String DEFAULT_BALANCE_OPERATION_TYPE = ">";
-    public final static String DEFAULT_CURRENCY_OPERATION_TYPE = "=";
-    public final static String DEFAULT_NUMBER_OF_OPERATIONS_OPERATION_TYPE = "=";
-    public final static String DEFAULT_LATEST_OPERATION_OPERATION_TYPE = ">";
-    public final static String DEFAULT_ACCOUNT_KIND_OPERATION_TYPE = ">";
+    public static final String DEFAULT_ACCOUNT_NAME_OPERATION_TYPE = "begins with";
+    public static final String DEFAULT_BALANCE_OPERATION_TYPE = ">";
+    public static final String DEFAULT_CURRENCY_OPERATION_TYPE = "=";
+    public static final String DEFAULT_NUMBER_OF_OPERATIONS_OPERATION_TYPE = "=";
+    public static final String DEFAULT_LATEST_OPERATION_OPERATION_TYPE = ">";
+    public static final String DEFAULT_ACCOUNT_KIND_OPERATION_TYPE = ">";
 
     private String accountName;
     private Double balance;
@@ -128,22 +128,28 @@ public class AccountSpecificationDto implements SpecificationDto {
     @Override
     public void fillEmptyFields() {
 
-        if (currencyOT == null)
+        if (currencyOT == null) {
             currencyOT = DEFAULT_CURRENCY_OPERATION_TYPE;
+        }
 
-        if (accountNameOT == null)
+        if (accountNameOT == null) {
             accountNameOT = DEFAULT_ACCOUNT_NAME_OPERATION_TYPE;
+        }
 
-        if (numberOfOperationsOT == null)
+        if (numberOfOperationsOT == null) {
             numberOfOperationsOT = DEFAULT_NUMBER_OF_OPERATIONS_OPERATION_TYPE;
+        }
 
-        if (latestOperationOT == null)
+        if (latestOperationOT == null) {
             latestOperationOT = DEFAULT_LATEST_OPERATION_OPERATION_TYPE;
+        }
 
-        if (balanceOT == null)
+        if (balanceOT == null) {
             balanceOT = DEFAULT_BALANCE_OPERATION_TYPE;
+        }
 
-        if (accountKindOT == null)
+        if (accountKindOT == null) {
             accountKindOT = DEFAULT_ACCOUNT_KIND_OPERATION_TYPE;
+        }
     }
 }

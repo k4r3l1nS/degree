@@ -5,7 +5,7 @@ import com.practice.demo.custom_annotations.DtoCorrectnessCheck;
 import com.practice.demo.dto.entity_dto.AccountDto;
 import com.practice.demo.dto.entity_dto.TransferBetweenAccountsDto;
 import com.practice.demo.dto.specification_dto.models.AccountSpecificationDto;
-import com.practice.demo.dto.paging_and_sotring_dto.PagingAndSortingDto;
+import com.practice.demo.dto.paging_and_sotring_dto.AbstractPagingAndSortingDto;
 import com.practice.demo.exceptions.models.*;
 import com.practice.demo.models.currency_enum.Currency;
 import com.practice.demo.components.units.CurrencyUnit;
@@ -19,6 +19,7 @@ import com.practice.demo.repos.entity_repos.ClientRepository;
 import com.practice.demo.repos.db_view_repos.AccountViewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,20 +106,20 @@ public class AccountService {
         //some type of withdrawal
     }
 
-    public Page<AccountView> fetchNextPageByClientId(PagingAndSortingDto pagingAndSortingDto,
+    public Page<AccountView> fetchNextPageByClientId(AbstractPagingAndSortingDto abstractPagingAndSortingDto,
                                                      AccountSpecificationDto accountSpecificationDto, Long clientId) {
 
         var conditions = accountSpecificationDto.toConditions(clientId);
 
-        var specification = new SpecificationBuilder<>().with(conditions).build();
-        var pageRequest = pagingAndSortingDto.toPageRequest();
+        var specification = new SpecificationBuilder<AccountView>().with(conditions).build();
+        var pageRequest = abstractPagingAndSortingDto.toPageRequest();
 
         return accountViewRepository.findAll(specification, pageRequest);
     }
 
     public AccountView findOneAccountView(Long clientId) {
 
-        var specification = new SpecificationBuilder<>()
+        Specification<AccountView> specification = new SpecificationBuilder<AccountView>()
                 .with(Condition.builder()
                         .fieldName("clientId").operation(Condition.OperationType.EQUALS)
                         .value(clientId).logicalOperator(Condition.LogicalOperatorType.AND)
@@ -135,7 +136,7 @@ public class AccountService {
     }
 
     public void transferBetweenAccounts(TransferBetweenAccountsDto transferBetweenAccountsDto, Long clientId)
-            throws EmptyFieldException, ResourceNotFoundException{
+            throws EmptyFieldException, ResourceNotFoundException {
 
         transferBetweenAccountsDto.throwIfNotFilled();
         currencyUnit.throwIfNotSupported(transferBetweenAccountsDto.getCurrency());

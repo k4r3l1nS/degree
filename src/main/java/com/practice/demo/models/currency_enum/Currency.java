@@ -56,10 +56,9 @@ public enum Currency {
     JPY("JPY");
 
 
-    private final static Map<String, Currency> _map;
+    private static final Map<String, Currency> _map;
 
     static {
-
         _map = Stream.of(values()).collect(Collectors.toMap(Currency::getName, Function.identity()));
     }
 

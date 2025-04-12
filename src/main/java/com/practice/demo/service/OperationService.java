@@ -3,7 +3,7 @@ package com.practice.demo.service;
 import com.practice.demo.components.event.publishers.OperationProceededPublisher;
 import com.practice.demo.custom_annotations.DtoCorrectnessCheck;
 import com.practice.demo.dto.entity_dto.OperationDto;
-import com.practice.demo.dto.paging_and_sotring_dto.PagingAndSortingDto;
+import com.practice.demo.dto.paging_and_sotring_dto.AbstractPagingAndSortingDto;
 import com.practice.demo.dto.specification_dto.models.OperationSpecificationDto;
 import com.practice.demo.exceptions.models.ResourceNotFoundException;
 import com.practice.demo.components.units.CurrencyUnit;
@@ -62,7 +62,7 @@ public class OperationService {
 
     public OperationView findOneOperationView(Long accountId) {
 
-        var specification = new SpecificationBuilder<>()
+        var specification = new SpecificationBuilder<OperationView>()
                 .with(Condition.builder()
                         .fieldName("accountId").operation(Condition.OperationType.EQUALS)
                         .value(accountId).logicalOperator(Condition.LogicalOperatorType.AND)
@@ -74,13 +74,13 @@ public class OperationService {
         return operationView.get(0);
     }
 
-    public Page<OperationView> fetchNextPageByAccountId(PagingAndSortingDto pagingAndSortingDto,
+    public Page<OperationView> fetchNextPageByAccountId(AbstractPagingAndSortingDto abstractPagingAndSortingDto,
                                                         OperationSpecificationDto operationSpecificationDto, Long accountId) {
 
         var conditions = operationSpecificationDto.toConditions(accountId);
 
-        var specification = new SpecificationBuilder<>().with(conditions).build();
-        var pageRequest = pagingAndSortingDto.toPageRequest();
+        var specification = new SpecificationBuilder<OperationView>().with(conditions).build();
+        var pageRequest = abstractPagingAndSortingDto.toPageRequest();
 
         return operationViewRepository.findAll(specification, pageRequest);
     }

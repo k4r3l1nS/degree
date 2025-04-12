@@ -19,7 +19,7 @@ public class AccountListDto {
     @Getter
     @Setter
     @Builder
-    private final static class CommonInfo {
+    private static final class CommonInfo {
 
         private String fullName;
         private Long clientId;
@@ -28,7 +28,7 @@ public class AccountListDto {
     @Getter
     @Setter
     @Builder
-    private final static class AccountInfo {
+    private static final class AccountInfo {
 
         private Long accountId;
 

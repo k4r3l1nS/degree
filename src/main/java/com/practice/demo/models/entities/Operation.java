@@ -69,7 +69,7 @@ public class Operation {
         DEPOSIT("DEPOSIT"),
         WITHDRAWAL("WITHDRAWAL");
 
-        private final static Map<String, OperationKind> _map;
+        private static final Map<String, OperationKind> _map;
 
         static {
 

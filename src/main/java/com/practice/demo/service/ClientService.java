@@ -3,7 +3,7 @@ package com.practice.demo.service;
 import com.practice.demo.custom_annotations.DtoCorrectnessCheck;
 import com.practice.demo.dto.entity_dto.ClientDto;
 import com.practice.demo.dto.specification_dto.models.ClientSpecificationDto;
-import com.practice.demo.dto.paging_and_sotring_dto.models.ClientPagingAndSortingDto;
+import com.practice.demo.dto.paging_and_sotring_dto.models.ClientAbstractPagingAndSortingDto;
 import com.practice.demo.exceptions.models.ResourceNotFoundException;
 import com.practice.demo.models.entities.Client;
 import com.practice.demo.models.db_views.ClientView;
@@ -36,19 +36,19 @@ public class ClientService {
         return clientRepository.findClientById(clientId);
     }
 
-    public Page<ClientView> fetchNextPage(ClientPagingAndSortingDto pagingAndSortingDto) {
+    public Page<ClientView> fetchNextPage(ClientAbstractPagingAndSortingDto pagingAndSortingDto) {
 
         var pageRequest = pagingAndSortingDto.toPageRequest();
 
         return clientViewRepository.findAll(pageRequest);
     }
 
-    public Page<ClientView> fetchNextPage(ClientPagingAndSortingDto pagingAndSortingDto,
+    public Page<ClientView> fetchNextPage(ClientAbstractPagingAndSortingDto pagingAndSortingDto,
                                           ClientSpecificationDto clientSpecificationDto) {
 
         var conditions = clientSpecificationDto.toConditions();
 
-        var specification = new SpecificationBuilder<>().with(conditions).build();
+        var specification = new SpecificationBuilder<ClientView>().with(conditions).build();
         var pageRequest = pagingAndSortingDto.toPageRequest();
 
         return clientViewRepository.findAll(specification, pageRequest);

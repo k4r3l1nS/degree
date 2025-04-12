@@ -30,12 +30,12 @@ public class Condition {
         GREATER(">"),
         LESS("<"),
         EQUALS("="),
-        IN ("in"),
+        IN("in"),
         BEGINS_WITH("begins with");
 
         private final String name;
 
-        private final static Map<String, OperationType> _map;
+        private static final Map<String, OperationType> _map;
 
         static {
 

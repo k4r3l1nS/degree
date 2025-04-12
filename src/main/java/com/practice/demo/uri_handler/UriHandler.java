@@ -13,7 +13,7 @@ public class UriHandler {
 
         int index = 0;
         String currentUri = "";
-        String key = "";
+        StringBuilder key = new StringBuilder();
 
         list.add(new Pair("home", "/"));
 
@@ -23,19 +23,20 @@ public class UriHandler {
 
             if (charAtIndex == '/' && index > 0) {
 
-                list.add(new Pair(key, currentUri));
-                key = "";
+                list.add(new Pair(key.toString(), currentUri));
+                key = new StringBuilder();
             }
 
             currentUri += charAtIndex;
 
-            if (charAtIndex != '/')
-                key += charAtIndex;
+            if (charAtIndex != '/') {
+                key.append(charAtIndex);
+            }
 
             ++index;
         }
 
-        list.add(new Pair(key, currentUri));
+        list.add(new Pair<>(key.toString(), currentUri));
 
         return list;
     }

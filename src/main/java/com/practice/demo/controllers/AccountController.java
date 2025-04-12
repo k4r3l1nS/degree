@@ -3,7 +3,7 @@ package com.practice.demo.controllers;
 import com.practice.demo.dto.entity_dto.AccountDto;
 import com.practice.demo.dto.entity_dto.AccountListDto;
 import com.practice.demo.dto.entity_dto.TransferBetweenAccountsDto;
-import com.practice.demo.dto.paging_and_sotring_dto.models.AccountPagingAndSortingDto;
+import com.practice.demo.dto.paging_and_sotring_dto.models.AccountAbstractPagingAndSortingDto;
 import com.practice.demo.dto.specification_dto.models.AccountSpecificationDto;
 import com.practice.demo.models.currency_enum.Currency;
 import com.practice.demo.models.entities.Account;
@@ -22,7 +22,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @GetMapping("/clients/{id}")
-    public String clientById(@ModelAttribute AccountPagingAndSortingDto accountPagingAndSortingDto,
+    public String clientById(@ModelAttribute AccountAbstractPagingAndSortingDto accountPagingAndSortingDto,
                              @ModelAttribute AccountSpecificationDto accountSpecificationDto,
                              @PathVariable(value = "id") Long clientId,
                              Model model, HttpServletRequest httpServletRequest) {
@@ -47,7 +47,7 @@ public class AccountController {
     }
 
     @GetMapping("/clients/{id}/new-account")
-    public String newAccount(@PathVariable(value="id") Long clientId, Model model) {
+    public String newAccount(@PathVariable(value = "id") Long clientId, Model model) {
 
         model.addAttribute("client_id", clientId);
         model.addAttribute("currencies", Currency.values());

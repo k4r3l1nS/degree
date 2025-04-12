@@ -98,9 +98,7 @@ public class ScheduledService {
 
                     currencyEntity.setCurrency(Currency.resolveByName(name));
                 }
-            }
-            else {
-
+            } else {
                 currencyRatesRepository.save(new CurrencyRates(name, Currency.resolveByName(name),
                         (valute.getValue())
                                 .divide(BigDecimal.valueOf(valute.getNominal()), 10, RoundingMode.FLOOR)));
@@ -115,8 +113,7 @@ public class ScheduledService {
             lastUpdate.setLastUpdate(currencyRatesJsonDto.getTimestamp());
 
             lastCurrencyRatesUpdateRepository.save(lastUpdate);
-        }
-        else {
+        } else {
 
             lastUbdateList.get(0).setLastUpdate(currencyRatesJsonDto.getTimestamp());
         }

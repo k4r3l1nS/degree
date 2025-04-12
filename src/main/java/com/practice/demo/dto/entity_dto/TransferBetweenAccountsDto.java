@@ -19,7 +19,7 @@ public class TransferBetweenAccountsDto {
 
     private boolean hasEmptyFields() {
 
-        return accountFromName == null ||accountFromName.isEmpty() ||
+        return accountFromName == null || accountFromName.isEmpty() ||
                 accountToName == null || accountToName.isEmpty() || transactionSum == null ||
                 currency == null || currency.isEmpty();
     }

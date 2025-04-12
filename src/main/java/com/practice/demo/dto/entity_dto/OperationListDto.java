@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class OperationListDto {
 
-    CommonInfo commonInfo;
-    Page<OperationInfo> operations;
+    private CommonInfo commonInfo;
+    private Page<OperationInfo> operations;
 
     @Getter
     @Setter
     @Builder
-    private final static class CommonInfo {
+    private static final class CommonInfo {
 
         private Long clientId;
         private Long accountId;
@@ -33,7 +33,7 @@ public class OperationListDto {
     @Getter
     @Setter
     @Builder
-    public final static class OperationInfo {
+    public static final class OperationInfo {
 
         private Long operationId;
 

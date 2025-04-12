@@ -1,9 +1,7 @@
 package com.practice.demo.controllers;
 
 import com.practice.demo.dto.entity_dto.CurrencyRatesDto;
-import com.practice.demo.models.currency_enum.Currency;
 import com.practice.demo.models.db_views.CurrencyRatesView;
-import com.practice.demo.models.entities.LastCurrencyRatesUpdate;
 import com.practice.demo.service.CurrencyRatesService;
 import com.practice.demo.uri_handler.UriHandler;
 import jakarta.servlet.http.HttpServletRequest;

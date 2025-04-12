@@ -94,9 +94,9 @@ public class Account {
         COMMON("COMMON"),
         ACCUMULATIVE("ACCUMULATIVE");
 
-        public final double ACCUMULATION_COEFFICIENT_PER_YEAR = 1.12;
+        private static final double ACCUMULATION_COEFFICIENT_PER_YEAR = 1.12;
 
-        private final static Map<String, AccountKind> _map;
+        private static final Map<String, AccountKind> _map;
 
         static {
 
@@ -132,7 +132,8 @@ public class Account {
     /**
      * Links operation entity to account
      *
-     * @param operation operation entity
+     * @param operation     operation entity
+     * @param finalSum      sum to operate with
      * @throws NotEnoughMoneyException not enough money on balance
      */
 //    @PublishOperation
@@ -140,16 +141,13 @@ public class Account {
 
         Objects.requireNonNull(operation);
 
-        switch (operation.getOperationKind()) {
-
-            case DEPOSIT -> balance = balance.add(finalSum);
-
+       balance = switch (operation.getOperationKind()) {
+            case DEPOSIT -> balance.add(finalSum);
             case WITHDRAWAL -> {
-
                 throwIfNotEnoughMoney(finalSum);
-                balance = balance.subtract(finalSum);
+                yield balance.subtract(finalSum);
             }
-        }
+       };
 
         this.operations.add(operation);
         operation.setAccount(this);
@@ -162,15 +160,19 @@ public class Account {
      */
     public BigDecimal getPercentageCoefficient() {
 
-        if (!accountKind.equals(AccountKind.ACCUMULATIVE))
+        if (!accountKind.equals(AccountKind.ACCUMULATIVE)) {
             return null;
-
-        long intervalInSeconds = Math.round((double)Duration.between(getLastCapitalization(), LocalDateTime.now())
-                .toMillis() / 1000);
+        }
+        long intervalInSeconds = Math.round((double)
+                Duration.between(getLastCapitalization(), LocalDateTime.now()).toMillis() / 1000
+        );
         long secondsInYear = 31557600L;
-
-        return BigDecimal.valueOf(Math.pow(accountKind.ACCUMULATION_COEFFICIENT_PER_YEAR,
-                (double)intervalInSeconds / secondsInYear) - 1);
+        return BigDecimal.valueOf(
+                Math.pow(
+                        AccountKind.ACCUMULATION_COEFFICIENT_PER_YEAR,
+                        (double) intervalInSeconds / secondsInYear
+                ) - 1
+        );
     }
 
     /**

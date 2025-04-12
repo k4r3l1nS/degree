@@ -9,7 +9,6 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Getter
@@ -17,11 +16,11 @@ import java.util.List;
 @Builder
 public class ClientSpecificationDto implements SpecificationDto {
 
-    public final static String DEFAULT_FIRST_NAME_OPERATION_TYPE = "begins with";
-    public final static String DEFAULT_LAST_NAME_OPERATION_TYPE = "begins with";
-    public final static String DEFAULT_NUMBER_OF_ACCOUNTS_OPERATION_TYPE = "=";
-    public final static String DEFAULT_REGISTRATION_DATE_OPERATION_TYPE = ">";
-    public final static String DEFAULT_BIRTH_DATE_OPERATION_TYPE = ">";
+    public static final String DEFAULT_FIRST_NAME_OPERATION_TYPE = "begins with";
+    public static final String DEFAULT_LAST_NAME_OPERATION_TYPE = "begins with";
+    public static final String DEFAULT_NUMBER_OF_ACCOUNTS_OPERATION_TYPE = "=";
+    public static final String DEFAULT_REGISTRATION_DATE_OPERATION_TYPE = ">";
+    public static final String DEFAULT_BIRTH_DATE_OPERATION_TYPE = ">";
 
     private String firstName;
     private String lastName;
@@ -87,8 +86,9 @@ public class ClientSpecificationDto implements SpecificationDto {
                     .build());
         }
 
-        if (!conditions.isEmpty())
-            conditions.get(conditions.size() - 1).setLogicalOperator(Condition.LogicalOperatorType.END);
+        if (!conditions.isEmpty()) {
+            conditions.getLast().setLogicalOperator(Condition.LogicalOperatorType.END);
+        }
 
         return conditions.isEmpty() ? null : conditions;
     }
@@ -96,19 +96,24 @@ public class ClientSpecificationDto implements SpecificationDto {
     @Override
     public void fillEmptyFields() {
 
-        if (firstNameOT == null)
+        if (firstNameOT == null) {
             firstNameOT = DEFAULT_FIRST_NAME_OPERATION_TYPE;
+        }
 
-        if (lastNameOT == null)
+        if (lastNameOT == null) {
             lastNameOT = DEFAULT_LAST_NAME_OPERATION_TYPE;
+        }
 
-        if (numberOfAccountsOT == null)
+        if (numberOfAccountsOT == null) {
             numberOfAccountsOT = DEFAULT_NUMBER_OF_ACCOUNTS_OPERATION_TYPE;
+        }
 
-        if (registrationDateOT == null)
+        if (registrationDateOT == null) {
             registrationDateOT = DEFAULT_REGISTRATION_DATE_OPERATION_TYPE;
+        }
 
-        if (birthDateOT == null)
+        if (birthDateOT == null) {
             birthDateOT = DEFAULT_BIRTH_DATE_OPERATION_TYPE;
+        }
     }
 }

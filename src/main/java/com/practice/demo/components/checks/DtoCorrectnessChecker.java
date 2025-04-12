@@ -31,20 +31,20 @@ public class DtoCorrectnessChecker {
 
     @Pointcut("@annotation(com.practice.demo.custom_annotations.DtoCorrectnessCheck) " +
             "&& args(clientDto, ..)")
-    public void clientCorrectnessPointcut(ClientDto clientDto) {}
+    public void clientCorrectnessPointcut(ClientDto clientDto) { }
 
     @Pointcut("@annotation(com.practice.demo.custom_annotations.DtoCorrectnessCheck) " +
             "&& args(accountDto, ..)")
-    public void accountCorrectnessPointcut(AccountDto accountDto) {}
+    public void accountCorrectnessPointcut(AccountDto accountDto) { }
 
     @Pointcut("@annotation(com.practice.demo.custom_annotations.DtoCorrectnessCheck) " +
             "&& args(operationDto, ..)")
-    public void operationCorrectnessPointcut(OperationDto operationDto) {}
+    public void operationCorrectnessPointcut(OperationDto operationDto) { }
 
     @Before("clientCorrectnessPointcut(clientDto)")
     public void check(JoinPoint joinPoint, ClientDto clientDto) {
 
-        var annotation = getDtoCorrectnessCheckAnnotation((ProceedingJoinPoint)joinPoint);
+        var annotation = getDtoCorrectnessCheckAnnotation((ProceedingJoinPoint) joinPoint);
         if (annotation != null && annotation.filled()) {
 
             clientDto.throwIfNotFilled();
@@ -57,7 +57,7 @@ public class DtoCorrectnessChecker {
     @Before("accountCorrectnessPointcut(accountDto)")
     public void check(JoinPoint joinPoint, AccountDto accountDto) {
 
-        var annotation = getDtoCorrectnessCheckAnnotation((ProceedingJoinPoint)joinPoint);
+        var annotation = getDtoCorrectnessCheckAnnotation((ProceedingJoinPoint) joinPoint);
         if (annotation != null && annotation.filled()) {
 
             accountDto.throwIfNotFilled();
@@ -72,7 +72,7 @@ public class DtoCorrectnessChecker {
     @Before("operationCorrectnessPointcut(operationDto)")
     public void check(JoinPoint joinPoint, OperationDto operationDto) {
 
-        var annotation = getDtoCorrectnessCheckAnnotation((ProceedingJoinPoint)joinPoint);
+        var annotation = getDtoCorrectnessCheckAnnotation((ProceedingJoinPoint) joinPoint);
         if (annotation != null && annotation.filled()) {
 
             operationDto.throwIfNotFilled();

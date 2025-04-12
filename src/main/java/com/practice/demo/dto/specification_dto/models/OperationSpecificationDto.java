@@ -14,10 +14,10 @@ import java.util.*;
 @Setter
 public class OperationSpecificationDto implements SpecificationDto {
 
-    public final static String DEFAULT_OPERATION_DATE_TIME_OPERATION_TYPE = ">";
-    public final static String DEFAULT_OPERATION_KIND_OPERATION_TYPE = "=";
-    public final static String DEFAULT_TRANSACTION_SUM_OPERATION_TYPE = ">";
-    public final static String DEFAULT_CURRENCY_FROM_OPERATION_TYPE = "=";
+    public static final String DEFAULT_OPERATION_DATE_TIME_OPERATION_TYPE = ">";
+    public static final String DEFAULT_OPERATION_KIND_OPERATION_TYPE = "=";
+    public static final String DEFAULT_TRANSACTION_SUM_OPERATION_TYPE = ">";
+    public static final String DEFAULT_CURRENCY_FROM_OPERATION_TYPE = "=";
 
 
     private LocalDateTime operationDateTime;
@@ -67,8 +67,9 @@ public class OperationSpecificationDto implements SpecificationDto {
                     .build());
         }
 
-        if (!conditions.isEmpty())
-            conditions.get(conditions.size() - 1).setLogicalOperator(Condition.LogicalOperatorType.END);
+        if (!conditions.isEmpty()) {
+            conditions.getLast().setLogicalOperator(Condition.LogicalOperatorType.END);
+        }
 
         return conditions;
     }
@@ -84,10 +85,11 @@ public class OperationSpecificationDto implements SpecificationDto {
 
         var otherConditions = toConditions();
 
-        if (toConditions().isEmpty())
-            conditions.get(conditions.size() - 1).setLogicalOperator(Condition.LogicalOperatorType.END);
-        else
+        if (toConditions().isEmpty()) {
+            conditions.getLast().setLogicalOperator(Condition.LogicalOperatorType.END);
+        } else {
             conditions.addAll(otherConditions);
+        }
 
         return conditions;
     }
@@ -101,16 +103,20 @@ public class OperationSpecificationDto implements SpecificationDto {
     @Override
     public void fillEmptyFields() {
 
-        if (operationDateTimeOT == null)
+        if (operationDateTimeOT == null) {
             operationDateTimeOT = DEFAULT_OPERATION_DATE_TIME_OPERATION_TYPE;
+        }
 
-        if (operationKindOT == null)
+        if (operationKindOT == null) {
             operationKindOT = DEFAULT_OPERATION_KIND_OPERATION_TYPE;
+        }
 
-        if (transactionSumOT == null)
+        if (transactionSumOT == null) {
             transactionSumOT = DEFAULT_TRANSACTION_SUM_OPERATION_TYPE;
+        }
 
-        if (currencyFromOT == null)
+        if (currencyFromOT == null) {
             currencyFromOT = DEFAULT_CURRENCY_FROM_OPERATION_TYPE;
+        }
     }
 }

@@ -1,8 +1,8 @@
 package com.practice.demo.dto.paging_and_sotring_dto.models;
 
-import com.practice.demo.dto.paging_and_sotring_dto.PagingAndSortingDto;
+import com.practice.demo.dto.paging_and_sotring_dto.AbstractPagingAndSortingDto;
 
-public class AccountPagingAndSortingDto extends PagingAndSortingDto {
+public class AccountAbstractPagingAndSortingDto extends AbstractPagingAndSortingDto {
 
 
     @Override

@@ -11,7 +11,6 @@ public class CurrencyRatesDto {
     private String currencyTo;
 
     public boolean hasOneEmptyField() {
-
         return !isEmpty() &&
                 (currencyFrom == null || currencyFrom.isEmpty() || currencyTo == null || currencyTo.isEmpty());
     }

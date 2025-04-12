@@ -35,17 +35,21 @@ public class ClientDto {
 
     public void mapTo(Client entity) {
 
-        if (this.firstName != null && !this.firstName.isEmpty())
+        if (this.firstName != null && !this.firstName.isEmpty()) {
             entity.setFirstName(this.firstName);
+        }
 
-        if (this.lastName != null && !this.lastName.isEmpty())
+        if (this.lastName != null && !this.lastName.isEmpty()) {
             entity.setLastName(this.lastName);
+        }
 
-        if (this.birthDate != null)
+        if (this.birthDate != null) {
             entity.setBirthDate(this.birthDate);
+        }
 
-        if (this.email != null && !this.email.isEmpty())
+        if (this.email != null && !this.email.isEmpty()) {
             entity.setEmail(this.email);
+        }
     }
 
     private boolean hasEmptyFields() {

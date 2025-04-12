@@ -7,6 +7,8 @@ import java.util.List;
 public interface SpecificationDto {
 
     List<Condition> toConditions();
+
     boolean isEmpty();
+
     void fillEmptyFields();
 }

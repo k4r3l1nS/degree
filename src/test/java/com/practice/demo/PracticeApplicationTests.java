@@ -16,10 +16,10 @@ import java.math.BigDecimal;
 class PracticeApplicationTests {
 
 	@Autowired
-	ScheduledService scheduledService;
+	private ScheduledService scheduledService;
 
 	@Autowired
-	OperationService operationService;
+	private OperationService operationService;
 
 	@Test
 	void contextLoads() {
