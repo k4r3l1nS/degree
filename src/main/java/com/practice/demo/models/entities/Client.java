@@ -19,7 +19,8 @@ public class Client {
      * Unique personal client id
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_seq")
+    @SequenceGenerator(name = "client_seq", sequenceName = "client_seq")
     private Long id;
 
     /**

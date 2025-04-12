@@ -23,7 +23,8 @@ public class Operation {
      * Unique operation id
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "operation_seq")
+    @SequenceGenerator(name = "operation_seq", sequenceName = "operation_seq")
     private Long id;
 
     /**
@@ -37,7 +38,7 @@ public class Operation {
      * Operation kind: withdrawal, deposit or capitalization
      */
     @Column(name = "operation_kind")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private OperationKind operationKind;
 
     /**
@@ -55,7 +56,7 @@ public class Operation {
     /**
      * Currency of transaction sum
      */
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "currency_from")
     private Currency currencyFrom;
 

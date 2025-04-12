@@ -17,7 +17,8 @@ import java.sql.Timestamp;
 public class LastCurrencyRatesUpdate {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "last_currency_rates_update_seq")
+    @SequenceGenerator(name = "last_currency_rates_update_seq", sequenceName = "last_currency_rates_update_seq")
     private Long id;
 
     @Column(name = "value")

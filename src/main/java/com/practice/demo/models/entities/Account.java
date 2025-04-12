@@ -30,7 +30,8 @@ public class Account {
     * Unique account id
     */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_seq")
+    @SequenceGenerator(name = "account_seq", sequenceName = "account_seq")
     private Long id;
 
     /**
@@ -42,7 +43,7 @@ public class Account {
     /**
      * Account currency type
      */
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "currency")
     private Currency currency;
 
@@ -55,7 +56,7 @@ public class Account {
     /**
      * Account kind: accumulative or common
      */
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "account_kind")
     private AccountKind accountKind;
 
