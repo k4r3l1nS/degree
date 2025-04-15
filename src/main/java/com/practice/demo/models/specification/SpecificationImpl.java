@@ -1,6 +1,6 @@
 package com.practice.demo.models.specification;
 
-import jakarta.persistence.criteria.*;
+import javax.persistence.criteria.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 

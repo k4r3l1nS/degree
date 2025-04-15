@@ -6,7 +6,7 @@ import com.practice.demo.dto.specification_dto.models.ClientSpecificationDto;
 import com.practice.demo.models.db_views.ClientView;
 import com.practice.demo.service.ClientService;
 import com.practice.demo.uri_handler.UriHandler;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;

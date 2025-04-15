@@ -16,3 +16,14 @@ spring:
   flyway:
     locations: classpath:db/migration
     enabled: true
+
+server:
+  servlet.context-path: /
+
+vaadin:
+  async-supported: true
+  load-on-startup: true
+  allowed-packages: com.vaadin,org.vaadin
+
+metadata:
+  application-name: Cool Market

@@ -1,6 +1,6 @@
 package com.practice.demo.uri_handler;
 
-import org.antlr.v4.runtime.misc.Pair;
+import com.vaadin.flow.internal.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class UriHandler {
         String currentUri = "";
         StringBuilder key = new StringBuilder();
 
-        list.add(new Pair("home", "/"));
+        list.add(new Pair<>("home", "/"));
 
         while (index < uri.length()) {
 
@@ -23,7 +23,7 @@ public class UriHandler {
 
             if (charAtIndex == '/' && index > 0) {
 
-                list.add(new Pair(key.toString(), currentUri));
+                list.add(new Pair<>(key.toString(), currentUri));
                 key = new StringBuilder();
             }
 

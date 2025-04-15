@@ -1,9 +1,9 @@
 package com.practice.demo.models.entities;
 
 import com.practice.demo.models.currency_enum.Currency;
-import jakarta.persistence.*;
 import lombok.*;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity

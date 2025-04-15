@@ -2,10 +2,7 @@ package com.practice.demo.models.db_views;
 
 import com.practice.demo.models.currency_enum.Currency;
 import com.practice.demo.models.entities.Account;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import javax.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;

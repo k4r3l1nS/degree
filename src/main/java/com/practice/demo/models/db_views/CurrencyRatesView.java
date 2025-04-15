@@ -2,14 +2,14 @@ package com.practice.demo.models.db_views;
 
 
 import com.practice.demo.models.currency_enum.Currency;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

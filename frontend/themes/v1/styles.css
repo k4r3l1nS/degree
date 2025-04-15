@@ -1,0 +1,70 @@
+/* Общие стили для шапки */
+.header {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Логотип */
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Размер и стиль изображения логотипа */
+.logo img {
+    width: 40px;
+    height: 32px;
+    margin-right: 0.5rem;
+}
+
+/* Заголовок */
+.fs-4 {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+/* Навигационное меню */
+nav {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Ссылки навигации */
+.nav-link {
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    margin: 0 0.5rem;
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+/* Активная ссылка */
+.nav-link.active {
+    color: #fff;
+    background-color: #007bff;
+}
+
+/* Эффект наведения на ссылки */
+.nav-link:hover {
+    background-color: #f1f1f1;
+    color: #007bff;
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .nav-link {
+        margin: 0.5rem 0;
+    }
+}

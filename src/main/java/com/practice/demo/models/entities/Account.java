@@ -2,11 +2,11 @@ package com.practice.demo.models.entities;
 
 import com.practice.demo.exceptions.models.NotEnoughMoneyException;
 import com.practice.demo.models.currency_enum.Currency;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;

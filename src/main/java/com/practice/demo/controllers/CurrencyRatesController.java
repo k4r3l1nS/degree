@@ -4,7 +4,7 @@ import com.practice.demo.dto.entity_dto.CurrencyRatesDto;
 import com.practice.demo.models.db_views.CurrencyRatesView;
 import com.practice.demo.service.CurrencyRatesService;
 import com.practice.demo.uri_handler.UriHandler;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
