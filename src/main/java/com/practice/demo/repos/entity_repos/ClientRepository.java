@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
@@ -16,4 +17,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     @Query("select E from ClientView E where E.id=?1")
     ClientView findClientById(Long id);
+
+    Optional<Client> findByUsername(String username);
 }

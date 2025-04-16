@@ -5,10 +5,12 @@ CREATE TABLE client
     last_name         VARCHAR(50),
     birth_date        DATE,
     registration_date TIMESTAMP,
-    email             VARCHAR(255),
-    is_active         BOOLEAN DEFAULT TRUE
+    email             VARCHAR(255) UNIQUE,
+    is_active         BOOLEAN DEFAULT TRUE,
+    username          VARCHAR(24) UNIQUE,
+    password          VARCHAR(255),
+    role              VARCHAR(24)
 );
-
 
 CREATE TABLE account
 (

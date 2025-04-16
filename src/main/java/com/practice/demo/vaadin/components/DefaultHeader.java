@@ -1,18 +1,25 @@
 package com.practice.demo.vaadin.components;
 
 import com.practice.demo.config.Config;
+import com.practice.demo.config.SecuritySessionHandler;
 import com.practice.demo.vaadin.IHasDefaultHeader;
 import com.practice.demo.vaadin.pages.*;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.shared.Registration;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +33,7 @@ public class DefaultHeader extends HorizontalLayout {
 
     private final Tabs tabs = new Tabs();
     private static final Map<String, Class<? extends Component>> navigationMap = new LinkedHashMap<>();
+    private Registration tabsChangeRegistration;
 
     public DefaultHeader() {
 
@@ -50,27 +58,38 @@ public class DefaultHeader extends HorizontalLayout {
 
         HorizontalLayout navMenu = generateNavigationMenu();
 
-        add(logoDiv, navMenu);
+        String username = SecuritySessionHandler.getLogin();
+        Span usernameSpan = new Span(username);
+        usernameSpan.setClassName("fs-4");
+        usernameSpan.getStyle().set("cursor", "pointer");
 
-        tabs.addSelectedChangeListener(selectedChangeEvent -> {
-            Tab selectedTab = selectedChangeEvent.getSelectedTab();
-            if (selectedTab != null) {
-                UI.getCurrent().navigate(
-                        navigationMap.get(selectedTab.getLabel())
-                ).ifPresent(pageComponent -> {
-                    if (pageComponent instanceof IHasDefaultHeader hasDefaultHeader) {
-                        hasDefaultHeader.switchTab(selectedTab);
-                    }
-                });
-            }
-        });
+        Avatar avatar = new Avatar(username);
+        avatar.setThemeName("xsmall");
+
+        Icon dropdownIcon = VaadinIcon.CHEVRON_DOWN.create();
+        dropdownIcon.getStyle().set("width", "12px");
+
+        HorizontalLayout userLayout = new HorizontalLayout(avatar, usernameSpan, dropdownIcon);
+        userLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        userLayout.getStyle()
+                .set("cursor", "pointer")
+                .set("padding", "0.25em 0.5em")
+                .set("border-radius", "10px")
+                .set("background-color", "#f0f2f5");
+
+        ContextMenu contextMenu = new ContextMenu(userLayout);
+        contextMenu.setOpenOnClick(true);
+        contextMenu.addItem("Выйти", (itemClickEvent) -> SecuritySessionHandler.destroySession());
+
+        add(logoDiv, navMenu, userLayout);
+
+        tabsChangeRegistration = initListener();
     }
 
     private void initNavigationMap() {
         navigationMap.put("Clients", ClientPage.class);
         navigationMap.put("Currency rates", CurrencyRatesPage.class);
         navigationMap.put("About us", AboutUsPage.class);
-        navigationMap.put("Log out", LoginPage.class);
     }
 
     private HorizontalLayout generateNavigationMenu() {
@@ -94,6 +113,7 @@ public class DefaultHeader extends HorizontalLayout {
     }
 
     public void setSelectedTab(Tab activeTab) {
+        tabsChangeRegistration.remove();
         if (activeTab == null) {
             tabs.setSelectedTab(null);
         } else {
@@ -105,5 +125,26 @@ public class DefaultHeader extends HorizontalLayout {
                     .findFirst()
                     .ifPresent(tabs::setSelectedTab);
         }
+        tabsChangeRegistration = initListener();
+    }
+
+    private Registration initListener() {
+        return tabs.addSelectedChangeListener(selectedChangeEvent -> {
+            Tab selectedTab = selectedChangeEvent.getSelectedTab();
+            Tab previousTab = selectedChangeEvent.getPreviousTab();
+            if (selectedTab != null && (previousTab == null || !StringUtils.equals(selectedTab.getLabel(), previousTab.getLabel()))) {
+                if (LoginPage.class.equals(navigationMap.get(selectedTab.getLabel()))) {
+                    SecuritySessionHandler.destroySession();
+                    return;
+                }
+                UI.getCurrent().navigate(
+                        navigationMap.get(selectedTab.getLabel())
+                ).ifPresent(pageComponent -> {
+                    if (pageComponent instanceof IHasDefaultHeader hasDefaultHeader) {
+                        hasDefaultHeader.switchTab(selectedTab);
+                    }
+                });
+            }
+        });
     }
 }

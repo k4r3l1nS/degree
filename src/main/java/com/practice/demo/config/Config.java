@@ -31,4 +31,7 @@ public class Config {
 
     @Value("${metadata.application-name}")
     private String applicationName;
+
+    @Value("${metadata.minimal-age}")
+    private int minimalAge;
 }

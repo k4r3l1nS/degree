@@ -1,11 +1,15 @@
 package com.practice.demo.models.entities;
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,7 +17,7 @@ import java.util.Objects;
 @Setter
 @Entity
 @Table(name = "client")
-public class Client {
+public class Client implements UserDetails {
 
     /**
      * Unique personal client id
@@ -59,6 +63,10 @@ public class Client {
     @Column(name = "is_active")
     private boolean isActive = true;
 
+    private String username;
+    private String password;
+    private String role;
+
     /**
      * List of account entities which belong to client
      */
@@ -69,7 +77,6 @@ public class Client {
      * No arguments constructor
      */
     public Client() {
-
         registrationDate = LocalDateTime.now();
     }
 
@@ -83,5 +90,30 @@ public class Client {
         Objects.requireNonNull(account);
         this.accounts.add(account);
         account.setClient(this);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return isActive;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return isActive;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return isActive;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isActive;
     }
 }

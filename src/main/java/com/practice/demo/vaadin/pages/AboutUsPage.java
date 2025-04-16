@@ -6,7 +6,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.router.Route;
 
+import javax.annotation.security.RolesAllowed;
+
 @Route("about-us")
+@RolesAllowed({"ADMIN", "USER"})
 public class AboutUsPage extends VerticalLayout implements IHasDefaultHeader {
 
     private final DefaultHeader defaultHeader = new DefaultHeader();
