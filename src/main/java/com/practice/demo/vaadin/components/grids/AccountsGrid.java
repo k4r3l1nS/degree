@@ -6,10 +6,15 @@ import com.practice.demo.models.currency_enum.Currency;
 import com.practice.demo.models.db_views.AccountView;
 import com.practice.demo.models.entities.Account;
 import com.practice.demo.models.entities.Client;
+import com.practice.demo.service.AccountService;
 import com.practice.demo.service.ServiceContainer;
 import com.practice.demo.vaadin.components.dialogs.AccountDialog;
+import com.practice.demo.vaadin.components.forms.ChangeCurrencyForm;
+import com.practice.demo.vaadin.components.forms.DeactivateAccountForm;
 import com.practice.demo.vaadin.components.templates.AbstractCustomGrid;
+import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
+import com.vaadin.flow.data.provider.Query;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -18,12 +23,14 @@ import java.text.DecimalFormatSymbols;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.List;
 
 public class AccountsGrid extends AbstractCustomGrid<AccountView> {
 
     private static final DecimalFormatSymbols DECIMAL_SYMBOLS;
 
     private final CurrencyUnit currencyUnit = ServiceContainer.getInstance().getCurrencyUnit();
+    private final AccountService accountService = ServiceContainer.getInstance().getAccountService();
 
     static {
         DECIMAL_SYMBOLS = new DecimalFormatSymbols();
@@ -32,7 +39,7 @@ public class AccountsGrid extends AbstractCustomGrid<AccountView> {
     }
 
     @Override
-    protected void setupColumns() {
+    protected void initColumns() {
         Client.Role currentRole = SecuritySessionHandler.getRole();
         if (!Client.Role.USER.equals(currentRole)) {
             addColumn(AccountView::getFullName).setHeader("ФИО владельца");
@@ -70,6 +77,33 @@ public class AccountsGrid extends AbstractCustomGrid<AccountView> {
     @Override
     protected void initListeners() {
         addItemDoubleClickListener(dblClick -> new AccountDialog(dblClick.getItem()).open());
+    }
+
+    @Override
+    protected void initContextMenu() {
+        GridContextMenu<AccountView> contextMenu = this.addContextMenu();
+        // todo -> Реализовать смену валюты счёта
+        contextMenu.addItem("Перевести в другую валюту").addMenuItemClickListener(menuClick ->
+                menuClick.getItem().ifPresent(accountView -> {
+                    // todo
+                    new ChangeCurrencyForm().open();
+                })
+        );
+        contextMenu.addItem("Удалить").addMenuItemClickListener(menuClick ->
+                menuClick.getItem().ifPresent(accountView -> {
+                    List<AccountView> otherAccounts = this.getDataProvider().fetch(new Query<>())
+                            .filter(filteredView -> filteredView.getAccountId() != null && !filteredView.getAccountId().equals(accountView.getAccountId()))
+                            .toList();
+                    new DeactivateAccountForm(
+                            accountView,
+                            otherAccounts,
+                            () -> {
+                                setItems(accountService.fetchAccountViewsByUsername(SecuritySessionHandler.getLogin()));
+                                getDataCommunicator().reset();
+                            }
+                    ).open();
+                })
+        );
     }
 
     @Override

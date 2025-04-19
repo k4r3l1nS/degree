@@ -124,7 +124,7 @@ public class AccountService {
         return accountRepository.findByClientId(client.getId())
                 .stream()
                 .map(account -> accountViewRepository.findAccountViewById(account.getId()))
-                .filter(accountView -> accountView != null && accountView.getAccountId() != null)
+                .filter(accountView -> accountView != null && accountView.getAccountId() != null && accountView.getIsActive())
                 .toList();
     }
 
@@ -209,5 +209,26 @@ public class AccountService {
                         transferBetweenAccountsDto.getTransactionSum()
                 )
         );
+    }
+
+    @Transactional
+    public void deactivateAccountWithTransfer(Long deletedAccountId, Long transferToAccountId, Long clientId) {
+        Account accountToDelete = accountRepository.findById(deletedAccountId).orElseThrow(
+                () -> new ResourceNotFoundException("Удаляемый счёт не найден")
+        );
+        Account accountToTransfer = accountRepository.findById(transferToAccountId).orElseThrow(
+                () -> new ResourceNotFoundException("Счёт, на который переводятся деньги, не найден")
+        );
+
+        transferBetweenAccounts(
+                TransferBetweenAccountsDto.builder()
+                        .accountFromName(accountToDelete.getName())
+                        .accountToName(accountToTransfer.getName())
+                        .currency(accountToDelete.getCurrency().getName())
+                        .transactionSum(accountToDelete.getBalance())
+                        .build(),
+                clientId
+        );
+        deactivateAccountById(deletedAccountId);
     }
 }

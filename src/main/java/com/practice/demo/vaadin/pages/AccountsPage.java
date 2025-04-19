@@ -39,6 +39,7 @@ public class AccountsPage extends VerticalLayout implements IHasDefaultHeader {
     public AccountsPage(AccountService accountService) {
         this.accountService = accountService;
         add(defaultHeader, noAccountsView, menu, accountsGrid);
+        initAccountGridListener();
 
         List<AccountView> accounts = fetchMyAccounts();
         if (accounts.isEmpty()) {
@@ -49,6 +50,16 @@ public class AccountsPage extends VerticalLayout implements IHasDefaultHeader {
             noAccountsView.setVisible(false);
             accountsGrid.setItems(accounts);
         }
+    }
+
+    private void initAccountGridListener() {
+        accountsGrid.getListDataView().addItemCountChangeListener(dataChangeEvent -> {
+            if (accountsGrid.getListDataView().getItems().findAny().isEmpty()) {
+                menu.setVisible(false);
+                accountsGrid.setVisible(false);
+                noAccountsView.setVisible(true);
+            }
+        });
     }
 
     private MenuLayout generateMenuLayout() {
