@@ -2,6 +2,7 @@ package com.practice.demo.vaadin.components;
 
 import com.practice.demo.config.Config;
 import com.practice.demo.config.SecuritySessionHandler;
+import com.practice.demo.models.entities.Client;
 import com.practice.demo.vaadin.IHasDefaultHeader;
 import com.practice.demo.vaadin.pages.*;
 import com.vaadin.flow.component.Component;
@@ -32,7 +33,7 @@ import java.util.Map;
 public class DefaultHeader extends HorizontalLayout {
 
     private final Tabs tabs = new Tabs();
-    private static final Map<String, Class<? extends Component>> navigationMap = new LinkedHashMap<>();
+    private final Map<String, Class<? extends Component>> navigationMap = new LinkedHashMap<>();
     private Registration tabsChangeRegistration;
 
     public DefaultHeader() {
@@ -87,9 +88,24 @@ public class DefaultHeader extends HorizontalLayout {
     }
 
     private void initNavigationMap() {
-        navigationMap.put("Clients", ClientPage.class);
-        navigationMap.put("Currency rates", CurrencyRatesPage.class);
-        navigationMap.put("About us", AboutUsPage.class);
+        Client.Role currentRole = SecuritySessionHandler.getRole();
+        switch (currentRole) {
+            case USER:
+                navigationMap.clear();
+                navigationMap.put("Мои счета", AccountsPage.class);
+                navigationMap.put("Операции по счетам", OperationsPage.class);
+                navigationMap.put("Соотношения валют", CurrencyRatesPage.class);
+                navigationMap.put("О нас", AboutUsPage.class);
+                break;
+            case ADMIN, SU:
+                navigationMap.clear();
+                navigationMap.put("Клиентская база", ClientsPage.class);
+                navigationMap.put("Соотношения валют", CurrencyRatesPage.class);
+                navigationMap.put("О нас", AboutUsPage.class);
+                break;
+            default:
+                throw new IllegalStateException("Роль не может быть не определена");
+        }
     }
 
     private HorizontalLayout generateNavigationMenu() {

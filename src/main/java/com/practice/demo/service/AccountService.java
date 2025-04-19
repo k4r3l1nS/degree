@@ -10,6 +10,7 @@ import com.practice.demo.exceptions.models.*;
 import com.practice.demo.models.currency_enum.Currency;
 import com.practice.demo.components.units.CurrencyUnit;
 import com.practice.demo.models.entities.Account;
+import com.practice.demo.models.entities.Client;
 import com.practice.demo.models.entities.Operation;
 import com.practice.demo.models.db_views.AccountView;
 import com.practice.demo.models.specification.Condition;
@@ -24,8 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional
@@ -50,7 +50,7 @@ public class AccountService {
         Operation firstDeposit = Operation.getOperation(Operation.OperationKind.DEPOSIT,
                 accountDto.getBalance(), account.getCurrency());
 
-        account.addOperation(firstDeposit, currencyUnit.convert(Currency.resolveByName(accountDto.getCurrency()),
+        account.performOperation(firstDeposit, currencyUnit.convert(Currency.resolveByName(accountDto.getCurrency()),
                         account.getCurrency(), accountDto.getBalance()));
 
         client.addAccount(account);
@@ -117,6 +117,17 @@ public class AccountService {
         return accountViewRepository.findAll(specification, pageRequest);
     }
 
+    public List<AccountView> fetchAccountViewsByUsername(String username) {
+        Client client = clientRepository.findByUsername(username).orElseThrow(
+                () -> new NoSuchElementException("No such username " + username)
+        );
+        return accountRepository.findByClientId(client.getId())
+                .stream()
+                .map(account -> accountViewRepository.findAccountViewById(account.getId()))
+                .filter(accountView -> accountView != null && accountView.getAccountId() != null)
+                .toList();
+    }
+
     public AccountView findOneAccountView(Long clientId) {
 
         Specification<AccountView> specification = new SpecificationBuilder<AccountView>()
@@ -132,13 +143,13 @@ public class AccountService {
 
         List<AccountView> accountView = accountViewRepository.findAll(specification);
 
-        return accountView.get(0);
+        return accountView.getFirst();
     }
 
     public void transferBetweenAccounts(TransferBetweenAccountsDto transferBetweenAccountsDto, Long clientId)
             throws EmptyFieldException, ResourceNotFoundException {
 
-        transferBetweenAccountsDto.throwIfNotFilled();
+        transferBetweenAccountsDto.throwIfNotFilled(false);
         currencyUnit.throwIfNotSupported(transferBetweenAccountsDto.getCurrency());
 
         Account accountFrom = accountRepository
@@ -146,17 +157,13 @@ public class AccountService {
         Account accountTo = accountRepository.findByName(transferBetweenAccountsDto.getAccountToName());
 
         if (accountFrom == null) {
-
-            RuntimeException exception = accountRepository.existsByName(transferBetweenAccountsDto.getAccountFromName()) ?
+            throw accountRepository.existsByName(transferBetweenAccountsDto.getAccountFromName()) ?
                     new ForbiddenResourceException("This account does not belong to client (id = " + clientId + ")") :
-                    new ResourceNotFoundException("Could not find account to withdraw money from");
-
-            throw exception;
+                    new ResourceNotFoundException("Счёт, с которого переводятся деньги, не найден");
         }
 
         if (accountTo == null) {
-
-            throw new ResourceNotFoundException("Could not find account to transfer money to");
+            throw new ResourceNotFoundException("Счёт, на который переводятся деньги, не найден");
         }
 
         accountFrom.throwIfNotEnoughMoney(currencyUnit
@@ -172,15 +179,35 @@ public class AccountService {
                     transferBetweenAccountsDto.getTransactionSum(),
                     Currency.resolveByName(transferBetweenAccountsDto.getCurrency()));
 
-            accountFrom.addOperation(withdrawalOperation,
+            accountFrom.performOperation(withdrawalOperation,
                     currencyUnit.convert(Currency.resolveByName(transferBetweenAccountsDto.getCurrency()),
                             accountFrom.getCurrency(), transferBetweenAccountsDto.getTransactionSum()));
-            accountTo.addOperation(depositOperation,
+            accountTo.performOperation(depositOperation,
                     currencyUnit.convert(Currency.resolveByName(transferBetweenAccountsDto.getCurrency()),
                             accountTo.getCurrency(), transferBetweenAccountsDto.getTransactionSum()));
 
             operationProceededPublisher.publishEvent(withdrawalOperation);
             operationProceededPublisher.publishEvent(depositOperation);
         }
+    }
+
+    public void addMoneyToAccount(TransferBetweenAccountsDto transferBetweenAccountsDto, Long clientId) {
+        transferBetweenAccountsDto.throwIfNotFilled(true);
+        Account accountTo = Optional.ofNullable(
+                accountRepository.findByName(transferBetweenAccountsDto.getAccountToName())
+        ).orElseThrow(() -> new ResourceNotFoundException("Счёт, на который переводятся деньги, не найден"));
+        Operation depositOperation = Operation.getOperation(
+                Operation.OperationKind.DEPOSIT,
+                transferBetweenAccountsDto.getTransactionSum(),
+                Currency.resolveByName(transferBetweenAccountsDto.getCurrency())
+        );
+        accountTo.performOperation(
+                depositOperation,
+                currencyUnit.convert(
+                        Currency.resolveByName(transferBetweenAccountsDto.getCurrency()),
+                        accountTo.getCurrency(),
+                        transferBetweenAccountsDto.getTransactionSum()
+                )
+        );
     }
 }

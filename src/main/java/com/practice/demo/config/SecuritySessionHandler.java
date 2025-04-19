@@ -2,14 +2,16 @@ package com.practice.demo.config;
 
 import com.practice.demo.models.entities.Client;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.*;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @UtilityClass
+@Slf4j
 public class SecuritySessionHandler {
 
     public boolean isLogin() {
@@ -25,19 +27,56 @@ public class SecuritySessionHandler {
     }
 
     public void destroySession() {
-        UI.getCurrent().getPage().executeJs("window.history.replaceState({}, document.title, '/login')");
-        SecurityContextHolder.clearContext();
-        VaadinSession.getCurrent().getSession().invalidate();
-        VaadinSession.getCurrent().close();
+        UI ui = UI.getCurrent();
+
+        // Отложенный редирект до завершения текущего клиентского цикла
+        ui.beforeClientResponse(ui, context -> {
+            ui.getPage().setLocation("/login");
+
+            // Очистка SecurityContext и сессии с задержкой
+            ui.access(() -> {
+                SecurityContextHolder.clearContext();
+                VaadinSession vaadinSession = VaadinSession.getCurrent();
+                if (vaadinSession != null) {
+                    vaadinSession.getSession().invalidate();
+                    vaadinSession.close();
+                }
+            });
+        });
     }
 
     public String getLogin() {
         try {
             if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Client client)) {
-                throw new UnsupportedOperationException("Логин не найден в контексте сессии");
+                throw new UnsupportedOperationException("Пользователь не найден в контексте сессии");
             }
             return client.getUsername();
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public Client.Role getRole() {
+        try {
+            if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Client client)) {
+                throw new UnsupportedOperationException("Пользователь не найден в контексте сессии");
+            }
+            return client.getRole();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public static Long getClientId() {
+        try {
+            if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Client client)) {
+                throw new UnsupportedOperationException("Пользователь не найден в контексте сессии");
+            }
+            return client.getId();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
             return null;
         }
     }

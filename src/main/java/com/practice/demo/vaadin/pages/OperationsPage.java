@@ -8,13 +8,14 @@ import com.vaadin.flow.router.Route;
 
 import javax.annotation.security.RolesAllowed;
 
-@Route("currency-rates")
+@Route("operations")
 @RolesAllowed({"ADMIN", "USER", "SU"})
-public class CurrencyRatesPage extends VerticalLayout implements IHasDefaultHeader {
+public class OperationsPage extends VerticalLayout implements IHasDefaultHeader {
 
     private final DefaultHeader defaultHeader = new DefaultHeader();
 
-    public CurrencyRatesPage() {
+    public OperationsPage() {
+
         add(defaultHeader);
     }
 

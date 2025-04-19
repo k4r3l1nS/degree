@@ -34,11 +34,11 @@ public class AccountView {
     @Column(name = "balance")
     private Double balance;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "account_kind")
     private Account.AccountKind accountKind;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "currency")
     private Currency currency;
 

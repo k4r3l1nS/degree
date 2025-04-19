@@ -59,7 +59,6 @@ public class DtoCorrectnessChecker {
 
         var annotation = getDtoCorrectnessCheckAnnotation((ProceedingJoinPoint) joinPoint);
         if (annotation != null && annotation.filled()) {
-
             accountDto.throwIfNotFilled();
         }
 

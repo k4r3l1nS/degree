@@ -68,3 +68,21 @@ nav {
         margin: 0.5rem 0;
     }
 }
+
+.columns-centered > vaadin-grid-cell-content {
+    text-align: center;
+}
+
+.no-accounts {
+    background-color: #f8f9fa;
+    border-radius: 1rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+    padding: 5rem;
+    text-align: center;
+}
+
+@keyframes float {
+    0%   { transform: translateY(0); }
+    50%  { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}

@@ -7,9 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
@@ -19,14 +21,14 @@ public class AuthenticationService {
     private final ClientRepository clientRepository;
     private final AuthenticationManager authenticationManager;
 
-    @Transactional
     public void register(Client client) {
         clientRepository.save(client);
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                client.getUsername(), client.getPassword()
+                client, null, Collections.singletonList(
+                        new SimpleGrantedAuthority("ROLE_" + Client.Role.USER.name())
+                )
         );
-        Authentication authentication = authenticationManager.authenticate(authToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authToken);
         log.info("Registration successful for login {}", client.getUsername());
     }
 

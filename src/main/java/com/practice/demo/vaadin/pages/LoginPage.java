@@ -4,7 +4,7 @@ import com.practice.demo.config.Config;
 import com.practice.demo.config.SecuritySessionHandler;
 import com.practice.demo.models.entities.Client;
 import com.practice.demo.service.AuthenticationService;
-import com.practice.demo.vaadin.components.ClientForm;
+import com.practice.demo.vaadin.components.forms.ClientForm;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -158,13 +158,19 @@ public class LoginPage extends VerticalLayout implements BeforeEnterObserver {
                 client.setLastName(lastNameField.getValue());
                 client.setBirthDate(birthDateField.getValue());
                 client.setEmail(emailField.getValue());
-                client.setRole("USER");
+                client.setRole(Client.Role.USER);
                 try {
                     authenticationService.register(client);
                     UI.getCurrent().navigate(HomePage.class); // переход на главную
                 } catch (DataIntegrityViolationException ex) {
-                    usernameField.setInvalid(true);
-                    usernameField.setErrorMessage("Пользователь уже существует");
+                    log.error(ex.getMessage(), ex);
+                    if (StringUtils.containsIgnoreCase(ex.getMessage(), "email")) {
+                        emailField.setInvalid(true);
+                        emailField.setErrorMessage("Email уже существует");
+                    } else {
+                        usernameField.setInvalid(true);
+                        usernameField.setErrorMessage("Пользователь уже существует");
+                    }
                 }
             }
         });

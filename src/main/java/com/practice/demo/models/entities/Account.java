@@ -2,6 +2,7 @@ package com.practice.demo.models.entities;
 
 import com.practice.demo.exceptions.models.NotEnoughMoneyException;
 import com.practice.demo.models.currency_enum.Currency;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,11 +13,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Entity
@@ -89,30 +86,14 @@ public class Account {
      * Nested class representing operation kind
      */
     @Getter
+    @AllArgsConstructor
     public enum AccountKind {
-
-        COMMON("COMMON"),
-        ACCUMULATIVE("ACCUMULATIVE");
-
-        private static final double ACCUMULATION_COEFFICIENT_PER_YEAR = 1.12;
-
-        private static final Map<String, AccountKind> _map;
-
-        static {
-
-            _map = Stream.of(values()).collect(Collectors.toMap(AccountKind::getName, Function.identity()));
-        }
+        COMMON("Сберегательный"),
+        ACCUMULATIVE("Накопительный");
 
         private final String name;
 
-        AccountKind(String name) {
-            this.name = name;
-        }
-
-        public static AccountKind resolveByName(String name) {
-
-            return _map.getOrDefault(name, null);
-        }
+        private static final double ACCUMULATION_COEFFICIENT_PER_YEAR = 1.12;
     }
 
     /**
@@ -125,7 +106,7 @@ public class Account {
         var operation = Operation.getOperation(Operation.OperationKind.DEPOSIT,
                 finalSum, currency);
 
-        addOperation(operation, finalSum);
+        performOperation(operation, finalSum);
         lastCapitalization = LocalDateTime.now();
     }
 
@@ -137,18 +118,15 @@ public class Account {
      * @throws NotEnoughMoneyException not enough money on balance
      */
 //    @PublishOperation
-    public void addOperation(Operation operation, BigDecimal finalSum) {
-
+    public void performOperation(Operation operation, BigDecimal finalSum) {
         Objects.requireNonNull(operation);
-
-       balance = switch (operation.getOperationKind()) {
+        balance = switch (operation.getOperationKind()) {
             case DEPOSIT -> balance.add(finalSum);
             case WITHDRAWAL -> {
                 throwIfNotEnoughMoney(finalSum);
                 yield balance.subtract(finalSum);
             }
-       };
-
+        };
         this.operations.add(operation);
         operation.setAccount(this);
     }
@@ -182,15 +160,12 @@ public class Account {
      * @return whether if enough money or not
      */
     private boolean isEnoughMoney(BigDecimal sum) {
-
         return balance.compareTo(sum) >= 0;
     }
 
     public void throwIfNotEnoughMoney(BigDecimal finalSum) {
-
         if (!isEnoughMoney(finalSum)) {
-
-            throw new NotEnoughMoneyException("There is not enough money on balance");
+            throw new NotEnoughMoneyException("На балансе недостаточно средств");
         }
     }
 }

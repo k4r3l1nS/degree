@@ -9,12 +9,12 @@ import com.vaadin.flow.router.Route;
 import javax.annotation.security.RolesAllowed;
 
 @Route("clients")
-@RolesAllowed({"ADMIN", "USER"})
-public class ClientPage extends VerticalLayout implements IHasDefaultHeader {
+@RolesAllowed({"ADMIN", "SU"})
+public class ClientsPage extends VerticalLayout implements IHasDefaultHeader {
 
     private final DefaultHeader defaultHeader = new DefaultHeader();
 
-    public ClientPage() {
+    public ClientsPage() {
 
         add(defaultHeader);
     }

@@ -1,4 +1,4 @@
-package com.practice.demo.vaadin.components;
+package com.practice.demo.vaadin.components.forms;
 
 import com.practice.demo.config.Config;
 import com.vaadin.flow.component.HasSize;

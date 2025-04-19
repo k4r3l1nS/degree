@@ -15,8 +15,8 @@ CREATE TABLE client
 CREATE TABLE account
 (
     id                  SERIAL PRIMARY KEY,
-    account_name        VARCHAR(30),
-    currency            VARCHAR(255), -- enum будет храниться как строка
+    account_name        VARCHAR(30) UNIQUE,
+    currency            VARCHAR(3), -- enum будет храниться как строка
     balance             NUMERIC DEFAULT 0,
     account_kind        VARCHAR(255), -- enum будет храниться как строка
     client_id           INTEGER REFERENCES client (id) ON DELETE CASCADE,

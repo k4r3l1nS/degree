@@ -74,9 +74,9 @@ public class AccountDto {
         }
 
 
-        if (balance.compareTo(BigDecimal.ZERO) <= 0) {
+        if (balance.compareTo(BigDecimal.ZERO) < 0) {
 
-            throw new InvalidSumInputException("First deposit is mandatory and must be above 0");
+            throw new InvalidSumInputException("Account can not be created with negative balance");
         }
     }
 

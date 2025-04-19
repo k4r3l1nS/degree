@@ -65,7 +65,13 @@ public class Client implements UserDetails {
 
     private String username;
     private String password;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    public enum Role {
+        ADMIN, USER, SU
+    }
 
     /**
      * List of account entities which belong to client

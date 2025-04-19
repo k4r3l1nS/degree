@@ -4,6 +4,7 @@ import com.practice.demo.exceptions.models.EmptyFieldException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 
@@ -17,16 +18,15 @@ public class TransferBetweenAccountsDto {
     private BigDecimal transactionSum;
     private String currency;
 
-    private boolean hasEmptyFields() {
+    private boolean hasEmptyFields(boolean isRefillFromOtherSource) {
 
-        return accountFromName == null || accountFromName.isEmpty() ||
-                accountToName == null || accountToName.isEmpty() || transactionSum == null ||
-                currency == null || currency.isEmpty();
+        return StringUtils.isBlank(accountFromName) && !isRefillFromOtherSource ||
+                StringUtils.isAnyBlank(accountToName, currency) || transactionSum == null;
     }
 
-    public void throwIfNotFilled() {
+    public void throwIfNotFilled(boolean isRefillFromOtherSource) {
 
-        if (hasEmptyFields()) {
+        if (hasEmptyFields(isRefillFromOtherSource)) {
 
             throw new EmptyFieldException("All fields and radio buttons must be filled in");
         }

@@ -18,4 +18,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
      @Query("select E from Account E where E.isActive = true and E.accountKind = 1")
      List<Account> findActiveAccumulationAccounts();
+
+     List<Account> findByClientId(Long clientId);
 }

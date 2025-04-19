@@ -54,7 +54,7 @@ public class ScheduledService {
                     finalSum, account.getCurrency());
 
 
-            account.addOperation(operation, finalSum);
+            account.performOperation(operation, finalSum);
 
             operationProceededPublisher.publishEvent(operation);
         }

@@ -41,7 +41,7 @@ public class OperationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Account with id = " + accountId + " not found"));
 
         var operation = operationDto.toEntity();
-        account.addOperation(operation, currencyUnit.convert(operation.getCurrencyFrom(),
+        account.performOperation(operation, currencyUnit.convert(operation.getCurrencyFrom(),
                 account.getCurrency(), operation.getTransactionSum()));
 
         operationRepository.save(operation);
