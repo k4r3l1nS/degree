@@ -84,6 +84,7 @@ public class DefaultHeader extends HorizontalLayout {
 
         add(logoDiv, navMenu, userLayout);
 
+        tabs.setSelectedTab(null);
         tabsChangeRegistration = initListener();
     }
 
@@ -145,22 +146,24 @@ public class DefaultHeader extends HorizontalLayout {
     }
 
     private Registration initListener() {
-        return tabs.addSelectedChangeListener(selectedChangeEvent -> {
-            Tab selectedTab = selectedChangeEvent.getSelectedTab();
-            Tab previousTab = selectedChangeEvent.getPreviousTab();
-            if (selectedTab != null && (previousTab == null || !StringUtils.equals(selectedTab.getLabel(), previousTab.getLabel()))) {
-                if (LoginPage.class.equals(navigationMap.get(selectedTab.getLabel()))) {
-                    SecuritySessionHandler.destroySession();
-                    return;
-                }
-                UI.getCurrent().navigate(
-                        navigationMap.get(selectedTab.getLabel())
-                ).ifPresent(pageComponent -> {
-                    if (pageComponent instanceof IHasDefaultHeader hasDefaultHeader) {
-                        hasDefaultHeader.switchTab(selectedTab);
-                    }
-                });
+        return tabs.addSelectedChangeListener(selectedChangeEvent ->
+                changeTabs(selectedChangeEvent.getSelectedTab(), selectedChangeEvent.getPreviousTab())
+        );
+    }
+
+    private void changeTabs(Tab selectedTab, Tab previousTab) {
+        if (selectedTab != null && (previousTab == null || !StringUtils.equals(selectedTab.getLabel(), previousTab.getLabel()))) {
+            if (LoginPage.class.equals(navigationMap.get(selectedTab.getLabel()))) {
+                SecuritySessionHandler.destroySession();
+                return;
             }
-        });
+            UI.getCurrent().navigate(
+                    navigationMap.get(selectedTab.getLabel())
+            ).ifPresent(pageComponent -> {
+                if (pageComponent instanceof IHasDefaultHeader hasDefaultHeader) {
+                    hasDefaultHeader.switchTab(selectedTab);
+                }
+            });
+        }
     }
 }

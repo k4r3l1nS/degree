@@ -24,7 +24,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -95,17 +94,26 @@ public class AccountService {
         return accountViewRepository.findAccountViewById(accountId);
     }
 
+    @Transactional
     public void deactivateAccountById(Long accountId) {
 
         var account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ResourceNotFoundException("Account with id = " + accountId + " not found"));
 
         account.setActive(false);
-        account.setBalance(BigDecimal.ZERO);
+        account.performOperation(
+                Operation.getOperation(
+                        Operation.OperationKind.WITHDRAWAL,
+                        account.getBalance(),
+                        account.getCurrency()
+                ),
+                account.getBalance()
+        );
 
         //some type of withdrawal
     }
 
+    @Transactional
     public Page<AccountView> fetchNextPageByClientId(AbstractPagingAndSortingDto abstractPagingAndSortingDto,
                                                      AccountSpecificationDto accountSpecificationDto, Long clientId) {
 
@@ -117,6 +125,7 @@ public class AccountService {
         return accountViewRepository.findAll(specification, pageRequest);
     }
 
+    @Transactional
     public List<AccountView> fetchAccountViewsByUsername(String username) {
         Client client = clientRepository.findByUsername(username).orElseThrow(
                 () -> new NoSuchElementException("No such username " + username)
@@ -146,6 +155,7 @@ public class AccountService {
         return accountView.getFirst();
     }
 
+    @Transactional
     public void transferBetweenAccounts(TransferBetweenAccountsDto transferBetweenAccountsDto, Long clientId)
             throws EmptyFieldException, ResourceNotFoundException {
 
@@ -191,6 +201,7 @@ public class AccountService {
         }
     }
 
+    @Transactional
     public void addMoneyToAccount(TransferBetweenAccountsDto transferBetweenAccountsDto, Long clientId) {
         transferBetweenAccountsDto.throwIfNotFilled(true);
         Account accountTo = Optional.ofNullable(
@@ -230,5 +241,24 @@ public class AccountService {
                 clientId
         );
         deactivateAccountById(deletedAccountId);
+    }
+
+    @Transactional
+    public void changeAccountCurrency(Long accountId, Currency newCurrency) {
+        Account modifiedAccount = accountRepository.findById(accountId).orElseThrow(
+                () -> new ResourceNotFoundException("Счёт, валюта которого изменяется, не найден")
+        );
+        modifiedAccount.setBalance(currencyUnit.convert(
+                modifiedAccount.getCurrency(), newCurrency, modifiedAccount.getBalance()
+        ));
+        modifiedAccount.setCurrency(newCurrency);
+    }
+
+    @Transactional
+    public Optional<Operation> extractLatestOperation(Long id) {
+        List<Operation> operations = accountRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Счёт не найден")
+        ).getOperations();
+        return operations.isEmpty() ? Optional.empty() : Optional.of(operations.getLast());
     }
 }

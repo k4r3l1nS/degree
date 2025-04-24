@@ -8,6 +8,7 @@ import com.practice.demo.models.entities.Account;
 import com.practice.demo.models.entities.Client;
 import com.practice.demo.service.AccountService;
 import com.practice.demo.service.ServiceContainer;
+import com.practice.demo.vaadin.utils.NumberFormatUtils;
 import com.practice.demo.vaadin.components.dialogs.AccountDialog;
 import com.practice.demo.vaadin.components.forms.ChangeCurrencyForm;
 import com.practice.demo.vaadin.components.forms.DeactivateAccountForm;
@@ -17,9 +18,6 @@ import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.data.provider.Query;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -27,16 +25,8 @@ import java.util.List;
 
 public class AccountsGrid extends AbstractCustomGrid<AccountView> {
 
-    private static final DecimalFormatSymbols DECIMAL_SYMBOLS;
-
     private final CurrencyUnit currencyUnit = ServiceContainer.getInstance().getCurrencyUnit();
     private final AccountService accountService = ServiceContainer.getInstance().getAccountService();
-
-    static {
-        DECIMAL_SYMBOLS = new DecimalFormatSymbols();
-        DECIMAL_SYMBOLS.setGroupingSeparator(' ');
-        DECIMAL_SYMBOLS.setDecimalSeparator(',');
-    }
 
     @Override
     protected void initColumns() {
@@ -45,9 +35,7 @@ public class AccountsGrid extends AbstractCustomGrid<AccountView> {
             addColumn(AccountView::getFullName).setHeader("ФИО владельца");
         }
         addColumn(AccountView::getAccountName).setHeader("Название счёта");
-        addColumn(accountView -> new DecimalFormat("###,##0.00", DECIMAL_SYMBOLS).format(
-                BigDecimal.valueOf(accountView.getBalance()).setScale(2, RoundingMode.HALF_UP)
-        )).setHeader("Баланс");
+        addColumn(accountView -> NumberFormatUtils.toMoney(accountView.getBalance())).setHeader("Баланс");
         addColumn(AccountView::getCurrency).setHeader("Валюта счёта");
         addColumn(accountView -> {
             Account.AccountKind accountKind = accountView.getAccountKind();
@@ -82,14 +70,14 @@ public class AccountsGrid extends AbstractCustomGrid<AccountView> {
     @Override
     protected void initContextMenu() {
         GridContextMenu<AccountView> contextMenu = this.addContextMenu();
-        // todo -> Реализовать смену валюты счёта
         contextMenu.addItem("Перевести в другую валюту").addMenuItemClickListener(menuClick ->
-                menuClick.getItem().ifPresent(accountView -> {
-                    // todo
-                    new ChangeCurrencyForm().open();
-                })
+                menuClick.getItem().ifPresent(accountView ->
+                    new ChangeCurrencyForm(accountView, () ->
+                        setItems(accountService.fetchAccountViewsByUsername(SecuritySessionHandler.getLogin()))
+                    ).open()
+                )
         );
-        contextMenu.addItem("Удалить").addMenuItemClickListener(menuClick ->
+        contextMenu.addItem("Деактивировать").addMenuItemClickListener(menuClick ->
                 menuClick.getItem().ifPresent(accountView -> {
                     List<AccountView> otherAccounts = this.getDataProvider().fetch(new Query<>())
                             .filter(filteredView -> filteredView.getAccountId() != null && !filteredView.getAccountId().equals(accountView.getAccountId()))
@@ -97,10 +85,7 @@ public class AccountsGrid extends AbstractCustomGrid<AccountView> {
                     new DeactivateAccountForm(
                             accountView,
                             otherAccounts,
-                            () -> {
-                                setItems(accountService.fetchAccountViewsByUsername(SecuritySessionHandler.getLogin()));
-                                getDataCommunicator().reset();
-                            }
+                            () -> setItems(accountService.fetchAccountViewsByUsername(SecuritySessionHandler.getLogin()))
                     ).open();
                 })
         );

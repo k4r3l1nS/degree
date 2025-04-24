@@ -4,14 +4,11 @@ package com.practice.demo.models.entities;
 import com.practice.demo.models.currency_enum.Currency;
 import javax.persistence.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -64,28 +61,14 @@ public class Operation {
      * Nested class representing operation kind
      */
     @Getter
+    @RequiredArgsConstructor
     public enum OperationKind {
 
-        DEPOSIT("DEPOSIT"),
-        WITHDRAWAL("WITHDRAWAL");
-
-        private static final Map<String, OperationKind> _map;
-
-        static {
-
-            _map = Stream.of(values()).collect(Collectors.toMap(OperationKind::getName, Function.identity()));
-        }
+        DEPOSIT("Депозит"),
+        WITHDRAWAL("Вывод средств");
 
         private final String name;
 
-        OperationKind(String name) {
-            this.name = name;
-        }
-
-        public static OperationKind resolveByName(String name) {
-
-            return _map.getOrDefault(name, null);
-        }
     }
 
     /**

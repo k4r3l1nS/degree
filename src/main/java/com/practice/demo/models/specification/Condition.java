@@ -30,8 +30,8 @@ public class Condition {
         GREATER(">"),
         LESS("<"),
         EQUALS("="),
-        IN("in"),
-        BEGINS_WITH("begins with");
+        IN("Содержит"),
+        BEGINS_WITH("Начинается с");
 
         private final String name;
 

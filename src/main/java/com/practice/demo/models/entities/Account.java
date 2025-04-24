@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -82,6 +83,10 @@ public class Account {
     @Column(name = "last_capitalization")
     private LocalDateTime lastCapitalization;
 
+    @UpdateTimestamp
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
     /**
      * Nested class representing operation kind
      */
@@ -93,7 +98,7 @@ public class Account {
 
         private final String name;
 
-        private static final double ACCUMULATION_COEFFICIENT_PER_YEAR = 1.12;
+        public static final double ACCUMULATION_COEFFICIENT_PER_YEAR = 1.12;
     }
 
     /**

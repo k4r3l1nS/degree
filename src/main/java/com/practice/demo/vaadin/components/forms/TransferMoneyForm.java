@@ -7,6 +7,7 @@ import com.practice.demo.exceptions.models.ResourceNotFoundException;
 import com.practice.demo.models.currency_enum.Currency;
 import com.practice.demo.service.AccountService;
 import com.practice.demo.service.ServiceContainer;
+import com.practice.demo.vaadin.utils.ValidationUtils;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -75,7 +76,6 @@ public class TransferMoneyForm extends Dialog {
                     field.setInvalid(true);
                     field.setErrorMessage("Поле обязательно для заполнения");
                 }
-
             });
         });
 
@@ -146,6 +146,7 @@ public class TransferMoneyForm extends Dialog {
     }
 
     private boolean isValidInput() {
+        ValidationUtils.invalidateEmptyFields(getChildren());
         return StringUtils.isNotBlank(fromAccountField.getValue())
                 && StringUtils.isNotBlank(toAccountField.getValue())
                 && !StringUtils.equals(fromAccountField.getValue(), toAccountField.getValue())

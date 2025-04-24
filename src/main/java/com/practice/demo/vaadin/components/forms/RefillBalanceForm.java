@@ -8,6 +8,7 @@ import com.practice.demo.exceptions.models.ResourceNotFoundException;
 import com.practice.demo.models.currency_enum.Currency;
 import com.practice.demo.service.AccountService;
 import com.practice.demo.service.ServiceContainer;
+import com.practice.demo.vaadin.utils.ValidationUtils;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -34,7 +35,7 @@ public class RefillBalanceForm extends Dialog {
     private final ComboBox<Currency> currencyComboBox = new ComboBox<>("Валюта перевода");
     private final BigDecimalField amountField = new BigDecimalField("Сумма перевода");
 
-    private final Button transferButton = new Button("Перевести");
+    private final Button refillButton = new Button("Пополнить");
     private final Button cancelButton = new Button("Отмена");
 
     private final Span disclaimerSpan = new Span(
@@ -59,14 +60,13 @@ public class RefillBalanceForm extends Dialog {
         currencyComboBox.setItems(Currency.values());
         currencyComboBox.setRequired(true);
 
-            toAccountField.setWidthFull();
-            ((HasValue<?, String>) toAccountField).addValueChangeListener(event -> {
-                if (StringUtils.isBlank(event.getValue())) {
-                    toAccountField.setInvalid(true);
-                    toAccountField.setErrorMessage("Поле обязательно для заполнения");
-                }
-
-            });
+        toAccountField.setWidthFull();
+        ((HasValue<?, String>) toAccountField).addValueChangeListener(event -> {
+            if (StringUtils.isBlank(event.getValue())) {
+                toAccountField.setInvalid(true);
+                toAccountField.setErrorMessage("Поле обязательно для заполнения");
+            }
+        });
 
         // Валидация для суммы
         amountField.setWidthFull();
@@ -103,14 +103,14 @@ public class RefillBalanceForm extends Dialog {
         disclaimerSpan.getStyle().set("width", "500px");
         add(formLayout, disclaimerSpan);
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, transferButton);
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton, refillButton);
         buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
         buttonLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         getFooter().add(buttonLayout);
 
         cancelButton.addClickListener(e -> close());
 
-        transferButton.addClickListener(e -> {
+        refillButton.addClickListener(e -> {
             if (isValidInput()) {
                 try {
                     accountService.addMoneyToAccount(
@@ -125,7 +125,7 @@ public class RefillBalanceForm extends Dialog {
                     Notification.show("Перевод успешно выполнен!");
                     close();
                 } catch (ResourceNotFoundException | NotEnoughMoneyException ex) {
-                    log.info("Ошибка пополнения средств на счёт {}: {}",
+                    log.error("Ошибка пополнения средств на счёт {}: {}",
                             toAccountField.getValue(), ex.getMessage(), ex);
                     Notification.show(ex.getMessage());
                 } catch (Exception ex) {
@@ -138,6 +138,7 @@ public class RefillBalanceForm extends Dialog {
     }
 
     private boolean isValidInput() {
+        ValidationUtils.invalidateEmptyFields(getChildren());
         return StringUtils.isNotBlank(toAccountField.getValue())
                 && amountField.getValue() != null
                 && amountField.getValue().compareTo(BigDecimal.ZERO) > 0

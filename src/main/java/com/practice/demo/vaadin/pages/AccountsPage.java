@@ -43,7 +43,6 @@ public class AccountsPage extends VerticalLayout implements IHasDefaultHeader {
 
         List<AccountView> accounts = fetchMyAccounts();
         if (accounts.isEmpty()) {
-            add();
             menu.setVisible(false);
             accountsGrid.setVisible(false);
         } else {

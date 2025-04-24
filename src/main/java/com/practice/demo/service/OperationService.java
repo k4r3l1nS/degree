@@ -71,7 +71,7 @@ public class OperationService {
 
         List<OperationView> operationView =  operationViewRepository.findAll(specification);
 
-        return operationView.get(0);
+        return operationView.getFirst();
     }
 
     public Page<OperationView> fetchNextPageByAccountId(AbstractPagingAndSortingDto abstractPagingAndSortingDto,
@@ -83,5 +83,9 @@ public class OperationService {
         var pageRequest = abstractPagingAndSortingDto.toPageRequest();
 
         return operationViewRepository.findAll(specification, pageRequest);
+    }
+
+    public List<OperationView> fetchOperationViewsByUsername(String username) {
+        return operationRepository.fetchOperationViewsByUsername(username);
     }
 }

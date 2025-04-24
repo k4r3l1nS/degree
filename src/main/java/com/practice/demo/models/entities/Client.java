@@ -1,6 +1,7 @@
 package com.practice.demo.models.entities;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -48,6 +49,7 @@ public class Client implements UserDetails {
     /**
      * Client's registration date & time
      */
+    @CreationTimestamp
     @Column(name = "registration_date")
     private LocalDateTime registrationDate;
 
@@ -78,13 +80,6 @@ public class Client implements UserDetails {
      */
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
     private List<Account> accounts = new ArrayList<>();
-
-    /**
-     * No arguments constructor
-     */
-    public Client() {
-        registrationDate = LocalDateTime.now();
-    }
 
     /**
      * Links account entity to client

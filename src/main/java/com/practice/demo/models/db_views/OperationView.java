@@ -34,15 +34,18 @@ public class OperationView {
     @Column(name = "balance")
     private double balance;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "account_currency")
     private Currency accountCurrency;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "operation_kind")
     private Operation.OperationKind operationKind;
 
     @Column(name = "transaction_sum")
-    private Double transactionSum;
+    private double transactionSum;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "currency_from")
     private Currency currencyFrom;
 

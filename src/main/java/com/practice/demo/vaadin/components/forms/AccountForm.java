@@ -6,6 +6,7 @@ import com.practice.demo.models.currency_enum.Currency;
 import com.practice.demo.models.entities.Account;
 import com.practice.demo.service.AccountService;
 import com.practice.demo.service.ServiceContainer;
+import com.practice.demo.vaadin.utils.ValidationUtils;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -113,6 +114,7 @@ public class AccountForm extends Dialog {
     }
 
     private boolean isValidInput() {
+        ValidationUtils.invalidateEmptyFields(getChildren());
         return StringUtils.isNotBlank(accountNameField.getValue())
                 && currencyComboBox.getValue() != null
                 && kindComboBox.getValue() != null;
