@@ -24,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -101,6 +102,18 @@ public class AccountService {
                 .orElseThrow(() -> new ResourceNotFoundException("Account with id = " + accountId + " not found"));
 
         account.setActive(false);
+        if (BigDecimal.ZERO.compareTo(account.getBalance()) < 0) {
+            account.performOperation(
+                    Operation.getOperation(
+                            Operation.OperationKind.WITHDRAWAL,
+                            account.getBalance(),
+                            account.getCurrency()
+                    ),
+                    account.getBalance()
+            );
+            //Вывод средств куда-либо
+        }
+        // Закрытие счёта
         account.performOperation(
                 Operation.getOperation(
                         Operation.OperationKind.WITHDRAWAL,
@@ -110,7 +123,6 @@ public class AccountService {
                 account.getBalance()
         );
 
-        //some type of withdrawal
     }
 
     @Transactional

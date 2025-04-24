@@ -12,7 +12,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 
 public class OperationDialog extends Dialog {
@@ -38,7 +37,8 @@ public class OperationDialog extends Dialog {
         String transactionSum;
         String currencyFrom;
         if (operationView.getTransactionSum() == 0) {
-            operationKind = "Заведение счёта";
+            operationKind = Operation.OperationKind.DEPOSIT.equals(operationView.getOperationKind()) ?
+                    "Заведение счёта" : "Закрытие счёта";
             transactionSum = "—";
             currencyFrom = "—";
         } else {

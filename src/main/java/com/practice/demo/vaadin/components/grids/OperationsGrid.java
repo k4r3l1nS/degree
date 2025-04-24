@@ -33,7 +33,9 @@ public class OperationsGrid extends AbstractCustomGrid<OperationView> {
         VALUE_PROVIDER_MAP.put("Валюта счёта", OperationView::getAccountCurrency);
         VALUE_PROVIDER_MAP.put("Тип операции", operationView -> {
             if (operationView.getTransactionSum() == 0) {
-                return "Заведение счёта";
+                return Operation.OperationKind.DEPOSIT.equals(operationView.getOperationKind())
+                        ? "Заведение счёта"
+                        : "Закрытие счёта";
             }
             Operation.OperationKind operationKind = operationView.getOperationKind();
             return operationKind == null ? "" : operationKind.getName();
