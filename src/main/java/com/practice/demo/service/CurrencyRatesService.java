@@ -35,7 +35,7 @@ public class CurrencyRatesService {
 
     public LastCurrencyRatesUpdate getLastUpdate() {
 
-        return lastCurrencyRatesUpdateRepository.findAll().get(0);
+        return lastCurrencyRatesUpdateRepository.findAll().getFirst();
     }
 
     public boolean existsByCharCode(String currencyName) {

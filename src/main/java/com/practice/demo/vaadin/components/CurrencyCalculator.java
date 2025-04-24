@@ -2,6 +2,7 @@ package com.practice.demo.vaadin.components;
 
 import com.practice.demo.components.units.CurrencyUnit;
 import com.practice.demo.models.currency_enum.Currency;
+import com.practice.demo.service.CurrencyRatesService;
 import com.practice.demo.service.ServiceContainer;
 import com.practice.demo.vaadin.utils.NumberFormatUtils;
 import com.practice.demo.vaadin.utils.ValidationUtils;
@@ -18,12 +19,16 @@ import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.html.Span;
 
 import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class CurrencyCalculator extends VerticalLayout {
 
     private final CurrencyUnit currencyUnit = ServiceContainer.getInstance().getCurrencyUnit();
+    private final CurrencyRatesService currencyRatesService = ServiceContainer.getInstance().getCurrencyRatesService();
 
+    private final Span title = new Span("Калькулятор валют");
+    private final Span lastUpdateLabel = new Span();
     private final ComboBox<Currency> fromCurrency = new ComboBox<>("Из валюты");
     private final ComboBox<Currency> toCurrency = new ComboBox<>("В валюту");
     private final BigDecimalField inputAmount = new BigDecimalField("Сумма");
@@ -31,6 +36,13 @@ public class CurrencyCalculator extends VerticalLayout {
     private final Span balanceLabel = new Span("Здесь появится результат!");
 
     public CurrencyCalculator() {
+
+        title.setClassName("fs-4");
+        title.getStyle().set("font-size", "28px");
+        lastUpdateLabel.setClassName("fs-4");
+        lastUpdateLabel.setText("Последнее обновление: " + DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss").format(
+                currencyRatesService.getLastUpdate().getLastUpdate().toLocalDateTime())
+        );
 
         fromCurrency.setRequired(true);
         fromCurrency.setItems(Currency.values());
@@ -74,7 +86,7 @@ public class CurrencyCalculator extends VerticalLayout {
         buttonLayout.setWidth(fieldsWidth, Unit.PIXELS);
         buttonLayout.setJustifyContentMode(JustifyContentMode.END);
 
-        add(fromCurrency, toCurrency, inputAmount, balanceLayout, buttonLayout);
+        add(title, lastUpdateLabel, fromCurrency, toCurrency, inputAmount, balanceLayout, buttonLayout);
     }
 
     private boolean isValidInput() {
