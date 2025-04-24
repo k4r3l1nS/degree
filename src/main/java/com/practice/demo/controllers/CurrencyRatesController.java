@@ -19,7 +19,7 @@ public class CurrencyRatesController {
 
     private final CurrencyRatesService currencyRatesService;
 
-    @GetMapping("/currency-rates")
+    @GetMapping("/currency-rates-2")
     public String currencyRates(@ModelAttribute CurrencyRatesDto currencyRatesDto,
                                 HttpServletRequest httpServletRequest, Model model) {
 

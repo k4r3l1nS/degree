@@ -1,6 +1,7 @@
 package com.practice.demo.vaadin.pages;
 
 import com.practice.demo.vaadin.IHasDefaultHeader;
+import com.practice.demo.vaadin.components.CurrencyCalculator;
 import com.practice.demo.vaadin.components.DefaultHeader;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -15,7 +16,14 @@ public class CurrencyRatesPage extends VerticalLayout implements IHasDefaultHead
     private final DefaultHeader defaultHeader = new DefaultHeader();
 
     public CurrencyRatesPage() {
-        add(defaultHeader);
+        setAlignItems(Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.CENTER);
+
+        CurrencyCalculator currencyCalculator = new CurrencyCalculator();
+        VerticalLayout contents = new VerticalLayout(currencyCalculator);
+        contents.setAlignItems(Alignment.CENTER);
+        contents.setJustifyContentMode(JustifyContentMode.CENTER);
+        add(defaultHeader, contents);
     }
 
     @Override
