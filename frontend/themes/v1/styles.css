@@ -86,3 +86,13 @@ nav {
     50%  { transform: translateY(-10px); }
     100% { transform: translateY(0); }
 }
+
+:host {
+    --primary-color: #0d6efd;
+    --light-gray: #f8f9fa;
+}
+
+h1, h2, h3 {
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--primary-color);
+}

@@ -42,6 +42,7 @@ public class OperationsPage extends VerticalLayout implements IHasDefaultHeader 
 
     public OperationsPage(OperationService operationService, ValidationAutoConfiguration validationAutoConfiguration) {
         this.operationService = operationService;
+        defaultHeader.selectTabByClass(this.getClass());
         add(defaultHeader, noOperationsView, menu, operationsGrid);
 
         initOperationGridListener();

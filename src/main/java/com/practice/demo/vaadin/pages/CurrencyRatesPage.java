@@ -16,6 +16,7 @@ public class CurrencyRatesPage extends VerticalLayout implements IHasDefaultHead
     private final DefaultHeader defaultHeader = new DefaultHeader();
 
     public CurrencyRatesPage() {
+        defaultHeader.selectTabByClass(this.getClass());
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 

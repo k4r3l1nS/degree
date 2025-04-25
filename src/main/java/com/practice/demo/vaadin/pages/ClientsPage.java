@@ -15,7 +15,7 @@ public class ClientsPage extends VerticalLayout implements IHasDefaultHeader {
     private final DefaultHeader defaultHeader = new DefaultHeader();
 
     public ClientsPage() {
-
+        defaultHeader.selectTabByClass(this.getClass());
         add(defaultHeader);
     }
 

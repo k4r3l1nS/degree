@@ -19,6 +19,7 @@ spring:
 
 server:
   servlet.context-path: /
+  port: 8088
 
 vaadin:
   async-supported: true
@@ -28,3 +29,4 @@ vaadin:
 metadata:
   application-name: Cool Market
   minimal-age: 14
+  support-email: makcum.kyp4ehkob@gmail.com

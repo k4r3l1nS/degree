@@ -34,4 +34,7 @@ public class Config {
 
     @Value("${metadata.minimal-age}")
     private int minimalAge;
+
+    @Value("${metadata.support-email}")
+    private String supportEmail;
 }

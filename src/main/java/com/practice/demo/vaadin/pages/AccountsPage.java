@@ -38,6 +38,7 @@ public class AccountsPage extends VerticalLayout implements IHasDefaultHeader {
 
     public AccountsPage(AccountService accountService) {
         this.accountService = accountService;
+        defaultHeader.selectTabByClass(this.getClass());
         add(defaultHeader, noAccountsView, menu, accountsGrid);
         initAccountGridListener();
 

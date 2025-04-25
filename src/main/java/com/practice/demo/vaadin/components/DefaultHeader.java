@@ -24,14 +24,18 @@ import com.vaadin.flow.shared.Registration;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @Setter
 public class DefaultHeader extends HorizontalLayout {
 
+    private static final Logger log = LoggerFactory.getLogger(DefaultHeader.class);
     private final Tabs tabs = new Tabs();
     private final Map<String, Class<? extends Component>> navigationMap = new LinkedHashMap<>();
     private Registration tabsChangeRegistration;
@@ -46,14 +50,15 @@ public class DefaultHeader extends HorizontalLayout {
 
         Div logoDiv = new Div();
         logoDiv.addClassName("logo");
-        Image logo = new Image("images/logo.svg", Config.getInstance().getApplicationName());
-        logo.setWidth("40px");
-        logo.setHeight("32px");
-        Span title = new Span("Cool Market");
+        Image logo = new Image("icons/logo.svg", "logo");
+        logo.setWidth("50px");
+        logo.setHeight("50px");
+        Span title = new Span(Config.getInstance().getApplicationName());
         title.addClassName("fs-4");
-        logoDiv.setWidth("150px");
+        title.getStyle().set("padding", "0px 10px");
+        logoDiv.setWidth("300px");
         logoDiv.setHeight("40px");
-        logoDiv.add(title);
+        logoDiv.add(logo, title);
 
         logoDiv.addClickListener(click -> UI.getCurrent().navigate(HomePage.class));
 
@@ -134,15 +139,18 @@ public class DefaultHeader extends HorizontalLayout {
         if (activeTab == null) {
             tabs.setSelectedTab(null);
         } else {
-            tabs.getChildren()
-                    .toList()
-                    .stream()
-                    .filter(child -> child instanceof Tab tab && StringUtils.equals(activeTab.getLabel(), tab.getLabel()))
-                    .map(child -> (Tab) child)
-                    .findFirst()
-                    .ifPresent(tabs::setSelectedTab);
+            getTabByLabel(activeTab.getLabel()).ifPresent(tabs::setSelectedTab);
         }
         tabsChangeRegistration = initListener();
+    }
+
+    private Optional<Tab> getTabByLabel(String label) {
+        return tabs.getChildren()
+                .toList()
+                .stream()
+                .filter(child -> child instanceof Tab tab && StringUtils.equals(label, tab.getLabel()))
+                .map(child -> (Tab) child)
+                .findFirst();
     }
 
     private Registration initListener() {
@@ -165,5 +173,15 @@ public class DefaultHeader extends HorizontalLayout {
                 }
             });
         }
+    }
+
+    public void selectTabByClass(Class<? extends Component> aClass) {
+        navigationMap.entrySet()
+                .stream()
+                .filter(entry -> aClass.isAssignableFrom(entry.getValue()))
+                .findFirst()
+                .ifPresent(pageClass ->
+                    tabs.setSelectedTab(getTabByLabel(pageClass.getKey()).orElseThrow())
+                );
     }
 }
